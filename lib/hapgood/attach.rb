@@ -1,4 +1,5 @@
 require 'hapgood/attach/sources'
+require 'base64'
 
 module Hapgood # :nodoc:
   module Attach # :nodoc:
@@ -122,6 +123,16 @@ module Hapgood # :nodoc:
         end
       end
 
+      def blob=(bl)
+        return unless bl
+        destroy_source  # Discard any existing source
+        begin
+          self.source = Sources::Blob.new(Base64.decode64(bl), blob_metadata)
+        rescue => e  # Can't do much here -we have to wait until the validation phase to resurrect/reconstitute errors
+          logger.error("Attach: *********ERROR: can't load blob data (#{e})")
+        end
+      end
+
       # Get the source.  Rescue exceptions and make them errors on the source virtual attribute.
       def source
         @source ||= uri && Sources::Base.reload(uri, stored_metadata)
@@ -229,6 +240,13 @@ module Hapgood # :nodoc:
         Hash.new.tap do |md|
           md[:filename] = data.original_filename if data.respond_to?(:original_filename)
           md[:mime_type] = ::Mime::Type.lookup(data.content_type) if data.respond_to?(:content_type)
+        end
+      end
+
+      def blob_metadata
+        Hash.new.tap do |md|
+          md[:filename] = filename
+          md[:mime_type] = ::Mime::Type.lookup(mime_type)
         end
       end
 
