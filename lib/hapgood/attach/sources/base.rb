@@ -109,6 +109,12 @@ module Hapgood # :nodoc:
           is.change_frame(i, &block)
         end
 
+        def frame_count
+          raise "Unable to process source" unless processable?
+          is = self.is_a?(Sources::Rmagick) ? self : Sources::Rmagick.new(self)
+          is.frame_count
+        end
+
         def valid?
           error.nil?
         end

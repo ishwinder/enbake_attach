@@ -136,6 +136,10 @@ module Hapgood # :nodoc:
           self
         end
 
+        def frame_count
+          ::Magick::Image.read(@source.tempfile.path).length
+        end
+
         private
         # Extract useful information from (ExiF | IPTC) header, if possible.
         def exif_data
