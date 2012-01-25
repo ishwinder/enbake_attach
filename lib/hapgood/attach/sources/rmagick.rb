@@ -114,6 +114,28 @@ module Hapgood # :nodoc:
           self
         end
 
+        # Method to get a particular frame.
+        def frame_image(fi)
+          @image ||= begin
+            format = self.class.format_for_mime_type(@source.mime_type)
+            read_spec = "#{@source.tempfile.path}[#{fi}]"
+            read_spec = "#{format}:" + read_spec if format
+            ::Magick::Image.read(read_spec).first
+          end
+        end
+
+        # Method to yield a particular frame.
+        # TODO: These methods should typically merge away with change_image methods above.
+        def change_frame(fi, &block)
+          yield frame_image(fi)
+          # TODO: Typical attach module dependencies. Always take care of these globals.
+          @tempfile = nil
+          @uri = nil # Once transformed, all external sources are invalid.
+          @blob = nil # Once transformed, we need to reset the data.  Now the getter can lazily load the blob.
+          @persistent = false
+          self
+        end
+
         private
         # Extract useful information from (ExiF | IPTC) header, if possible.
         def exif_data

@@ -104,6 +104,11 @@ module Hapgood # :nodoc:
           is.change_image(&block)
         end
 
+        def change_frame(i, &block)
+          is = self.is_a?(Sources::Rmagick) ? self : Sources::Rmagick.new(self)
+          is.change_frame(i, &block)
+        end
+
         def valid?
           error.nil?
         end
