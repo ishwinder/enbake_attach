@@ -114,7 +114,7 @@ module Hapgood # :nodoc:
       # Setter for virtual url attribute used to reference external data sources.
       def url=(u)
         @url = u
-        return unless u
+        return unless u && !u.blank?
         destroy_source  # Discard any existing source
         begin
           self.source = Sources::Base.load(::URI.parse(u))
