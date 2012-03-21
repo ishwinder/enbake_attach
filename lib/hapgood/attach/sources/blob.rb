@@ -5,6 +5,10 @@ module Hapgood # :nodoc:
     module Sources
       # Methods for blob sources
       class Blob < Hapgood::Attach::Sources::Base
+        def self.load(d, m={})
+          new(d, m)
+        end
+
         # Does this source persist at the URI independent of this application?
         def persistent?
           false

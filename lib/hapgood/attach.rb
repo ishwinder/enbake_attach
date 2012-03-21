@@ -127,7 +127,7 @@ module Hapgood # :nodoc:
         return unless bl
         destroy_source  # Discard any existing source
         begin
-          self.source = Sources::Blob.new(Base64.decode64(bl), blob_metadata)
+          self.source = Sources::Base.load(Base64.decode64(bl[:data]), blob_metadata(bl))
         rescue => e  # Can't do much here -we have to wait until the validation phase to resurrect/reconstitute errors
           logger.error("Attach: *********ERROR: can't load blob data (#{e})")
         end
@@ -243,10 +243,10 @@ module Hapgood # :nodoc:
         end
       end
 
-      def blob_metadata
+      def blob_metadata(b)
         Hash.new.tap do |md|
-          md[:filename] = filename
-          md[:mime_type] = ::Mime::Type.lookup(mime_type)
+          md[:filename] = b[:filename]
+          md[:mime_type] = ::Mime::Type.lookup(b[:content_type])
         end
       end
 
