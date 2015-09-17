@@ -14,8 +14,8 @@ module Hapgood # :nodoc:
       #   data            : A blob (string) of the attachment's data
       #   tempfile        : A tempfile of the attachment
       class Base
-        class_inheritable_accessor :tempfile_path, :instance_writer => false
-        write_inheritable_attribute(:tempfile_path, File.join(RAILS_ROOT, 'tmp', 'attach'))
+        class_attribute :tempfile_path
+        self.tempfile_path = File.join(RAILS_ROOT, 'tmp', 'attach')
 
         attr_reader :error, :data
 

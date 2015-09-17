@@ -36,7 +36,7 @@ module Hapgood # :nodoc:
         options[:store]            ||= Proc.new {|i, e| "file://localhost#{::File.join(RAILS_ROOT, 'public', 'attachments', [i,e].compact.join('.'))}"}
 
         # doing these shenanigans so that #attachment_options is available to processors and backends
-        class_inheritable_accessor :attachment_options
+        class_attribute :attachment_options
         self.attachment_options = options
 
         # only need to define these once on a class
